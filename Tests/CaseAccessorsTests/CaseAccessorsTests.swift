@@ -21,16 +21,16 @@ final class CaseAccessorsTests: XCTestCase {
                 case one(String)
                 case two(Int)
                 var one: String? {
-                    if case .one(let value) = self {
-                        return value
+                    guard case .one(let value) = self else {
+                        return nil
                     }
-                    return nil
+                    return value
                 }
                 var two: Int? {
-                    if case .two(let value) = self {
-                        return value
+                    guard case .two(let value) = self else {
+                        return nil
                     }
-                    return nil
+                    return value
                 }
             }
             """,
@@ -49,10 +49,10 @@ final class CaseAccessorsTests: XCTestCase {
             enum Test {
                 case one(String, Int)
                 var one: (String, Int)? {
-                    if case .one(let value) = self {
-                        return value
+                    guard case .one(let value) = self else {
+                        return nil
                     }
-                    return nil
+                    return value
                 }
             }
             """,
@@ -71,10 +71,10 @@ final class CaseAccessorsTests: XCTestCase {
             enum Test {
                 case one(String?)
                 var one: String? {
-                    if case .one(let value) = self {
-                        return value
+                    guard case .one(let value) = self else {
+                        return nil
                     }
-                    return nil
+                    return value
                 }
             }
             """,

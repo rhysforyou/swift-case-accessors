@@ -31,46 +31,32 @@ public struct CaseAccessorsMacro: MemberMacro {
         return caseElementsWithAssociatedValue.map { caseElement in
             let associatedValues = caseElement.associatedValue!.parameterList
 
-            if associatedValues.count == 1 {
-                let returnType: TypeSyntax
+            let returnTypeSyntax: TypeSyntax
 
-                if associatedValues.first!.type.is(OptionalTypeSyntax.self) {
-                    returnType = associatedValues.first!.type
-                } else {
-                    returnType = TypeSyntax(OptionalTypeSyntax(wrappedType: associatedValues.first!.type))
-                }
-                
-                return """
-                var \(caseElement.identifier): \(returnType) {
-                    if case .\(caseElement.identifier)(let value) = self {
-                        return value
-                    }
-                    return nil
-                }
-                """
+            if associatedValues.count == 1, associatedValues.first!.type.is(OptionalTypeSyntax.self) {
+                returnTypeSyntax = associatedValues.first!.type
+            } else if associatedValues.count == 1 {
+                returnTypeSyntax = TypeSyntax(OptionalTypeSyntax(wrappedType: associatedValues.first!.type))
             } else {
-                let associatedValueTypes = associatedValues.map { TypeSyntax($0.type) }
-                let tupleTypeElements = associatedValueTypes.map { TupleTypeElementSyntax(type: $0) }
                 let tupleType = TupleTypeSyntax(
                     elements: TupleTypeElementListSyntax {
-                        for type in tupleTypeElements {
-                            type
+                        for associatedValue in associatedValues {
+                            TupleTypeElementSyntax(type: associatedValue.type)
                         }
                     }
                 )
 
-                let type = OptionalTypeSyntax(wrappedType: TypeSyntax(tupleType))
+                returnTypeSyntax = TypeSyntax(OptionalTypeSyntax(wrappedType: TypeSyntax(tupleType)))
+            }
 
-
-                return """
-                var \(caseElement.identifier): \(type) {
-                    if case .\(caseElement.identifier)(let value) = self {
-                        return value
-                    }
+            return """
+            var \(caseElement.identifier): \(returnTypeSyntax) {
+                guard case .\(caseElement.identifier)(let value) = self else {
                     return nil
                 }
-                """
+                return value
             }
+            """
         }
     }
 }
