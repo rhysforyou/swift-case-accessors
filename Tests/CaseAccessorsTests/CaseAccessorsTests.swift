@@ -38,6 +38,28 @@ final class CaseAccessorsTests: XCTestCase {
         )
     }
 
+    func testAccessorsMultipleAssociatedValues() {
+        assertMacroExpansion(
+            """
+            @CaseAccessors enum Test {
+                case one(String, Int)
+            }
+            """,
+            expandedSource: """
+            enum Test {
+                case one(String, Int)
+                var one: (String, Int)? {
+                    if case .one(let value) = self {
+                        return value
+                    }
+                    return nil
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
     func testAccessorsOptional() {
         assertMacroExpansion(
             """

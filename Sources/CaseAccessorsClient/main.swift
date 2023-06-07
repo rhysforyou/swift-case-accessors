@@ -3,12 +3,12 @@ import CaseAccessors
 @CaseAccessors @CaseConditionals enum TestEnum {
     case one(String)
     case two(Int)
-    case three(Bool)
+    case three(String, Int)
 }
 
 let one = TestEnum.one("One")
 let two = TestEnum.two(2)
-let three = TestEnum.three(true)
+let three = TestEnum.three("Three", 3)
 
 print("one.one == \(String(describing: one.one))")
 print("one.two == \(String(describing: one.two))")

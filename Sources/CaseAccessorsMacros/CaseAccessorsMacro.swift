@@ -24,26 +24,53 @@ public struct CaseAccessorsMacro: MemberMacro {
 
         let caseElements = caseDeclarations.flatMap(\.elements)
 
-        let caseElementsWithSingleAssociatedValue = caseElements.filter { caseElement in
-            guard let associatedValues = caseElement.associatedValue else { return false }
-
-            return associatedValues.parameterList.count == 1
+        let caseElementsWithAssociatedValue = caseElements.filter { caseElement in
+            caseElement.associatedValue != nil
         }
 
-        return caseElementsWithSingleAssociatedValue.map { caseElement in
-            let associatedValue = caseElement.associatedValue!.parameterList.first!
-            let type: TypeSyntax = associatedValue.type.is(OptionalTypeSyntax.self)
-                ? associatedValue.type
-                : TypeSyntax(OptionalTypeSyntax(wrappedType: associatedValue.type))
+        return caseElementsWithAssociatedValue.map { caseElement in
+            let associatedValues = caseElement.associatedValue!.parameterList
 
-            return """
-            var \(caseElement.identifier): \(type) {
-                if case .\(caseElement.identifier)(let value) = self {
-                    return value
+            if associatedValues.count == 1 {
+                let returnType: TypeSyntax
+
+                if associatedValues.first!.type.is(OptionalTypeSyntax.self) {
+                    returnType = associatedValues.first!.type
+                } else {
+                    returnType = TypeSyntax(OptionalTypeSyntax(wrappedType: associatedValues.first!.type))
                 }
-                return nil
+                
+                return """
+                var \(caseElement.identifier): \(returnType) {
+                    if case .\(caseElement.identifier)(let value) = self {
+                        return value
+                    }
+                    return nil
+                }
+                """
+            } else {
+                let associatedValueTypes = associatedValues.map { TypeSyntax($0.type) }
+                let tupleTypeElements = associatedValueTypes.map { TupleTypeElementSyntax(type: $0) }
+                let tupleType = TupleTypeSyntax(
+                    elements: TupleTypeElementListSyntax {
+                        for type in tupleTypeElements {
+                            type
+                        }
+                    }
+                )
+
+                let type = OptionalTypeSyntax(wrappedType: TypeSyntax(tupleType))
+
+
+                return """
+                var \(caseElement.identifier): \(type) {
+                    if case .\(caseElement.identifier)(let value) = self {
+                        return value
+                    }
+                    return nil
+                }
+                """
             }
-            """
         }
     }
 }
