@@ -10,25 +10,29 @@ public struct CaseAccessorsMacro: MemberMacro {
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
         guard let enumDeclaration = declaration.as(EnumDeclSyntax.self) else {
-            let enumErrorDiagnostic = Diagnostic(
+            context.diagnose(Diagnostic(
                 node: Syntax(attribute),
                 message: CaseAccessorsDiagnostic.notAnEnum
-            )
-            context.diagnose(enumErrorDiagnostic)
+            ))
             return []
         }
 
-        let caseDeclarations = enumDeclaration.memberBlock.members.compactMap { member in
-            member.decl.as(EnumCaseDeclSyntax.self)
-        }
-
+        let members = enumDeclaration.memberBlock.members
+        let caseDeclarations = members.compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
         let caseElements = caseDeclarations.flatMap(\.elements)
-
-        let caseElementsWithAssociatedValue = caseElements.filter { caseElement in
+        let caseElementsWithAssociatedValues = caseElements.filter { caseElement in
             caseElement.associatedValue != nil
         }
 
-        return caseElementsWithAssociatedValue.map { caseElement in
+        guard !caseElementsWithAssociatedValues.isEmpty else {
+            context.diagnose(Diagnostic(
+                node: Syntax(attribute),
+                message: CaseAccessorsDiagnostic.noCasesWithAssociatedValues
+            ))
+            return []
+        }
+
+        return caseElementsWithAssociatedValues.map { caseElement in
             let associatedValues = caseElement.associatedValue!.parameterList
 
             let returnTypeSyntax: TypeSyntax
@@ -46,7 +50,7 @@ public struct CaseAccessorsMacro: MemberMacro {
                     }
                 )
 
-                returnTypeSyntax = TypeSyntax(OptionalTypeSyntax(wrappedType: TypeSyntax(tupleType)))
+                returnTypeSyntax = TypeSyntax(OptionalTypeSyntax(wrappedType: tupleType))
             }
 
             return """

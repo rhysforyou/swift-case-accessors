@@ -38,6 +38,34 @@ final class CaseAccessorsTests: XCTestCase {
         )
     }
 
+    func testAccessorsCompact() {
+        assertMacroExpansion(
+            """
+            @CaseAccessors enum Test {
+                case one(String), two(Int)
+            }
+            """,
+            expandedSource: """
+            enum Test {
+                case one(String), two(Int)
+                var one: String? {
+                    guard case .one(let value) = self else {
+                        return nil
+                    }
+                    return value
+                }
+                var two: Int? {
+                    guard case .two(let value) = self else {
+                        return nil
+                    }
+                    return value
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
     func testAccessorsMultipleAssociatedValues() {
         assertMacroExpansion(
             """
@@ -100,6 +128,30 @@ final class CaseAccessorsTests: XCTestCase {
                     line: 1,
                     column: 1,
                     severity: .error
+                )
+            ],
+            macros: testMacros
+        )
+    }
+
+    func testAccessorsNoAssociatedValues() {
+        assertMacroExpansion(
+            """
+            @CaseAccessors enum Test {
+                case one, two, three
+            }
+            """,
+            expandedSource: """
+            enum Test {
+                case one, two, three
+            }
+            """,
+            diagnostics: [
+                DiagnosticSpec(
+                    message: "'@CaseAccessors' was applied to an enum without any cases containing associated values",
+                    line: 1,
+                    column: 1,
+                    severity: .warning
                 )
             ],
             macros: testMacros

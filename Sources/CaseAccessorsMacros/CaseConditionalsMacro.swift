@@ -10,18 +10,15 @@ public struct CaseConditionalsMacro: MemberMacro {
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax]  {
         guard let enumDeclaration = declaration.as(EnumDeclSyntax.self) else {
-            let enumErrorDiagnostic = Diagnostic(
+            context.diagnose(Diagnostic(
                 node: Syntax(attribute),
-                message: CaseAccessorsDiagnostic.notAnEnum
-            )
-            context.diagnose(enumErrorDiagnostic)
+                message: CaseConditionalsDiagnostic.notAnEnum
+            ))
             return []
         }
 
-        let caseDeclarations = enumDeclaration.memberBlock.members.compactMap { member in
-            member.decl.as(EnumCaseDeclSyntax.self)
-        }
-
+        let members = enumDeclaration.memberBlock.members
+        let caseDeclarations = members.compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
         let caseElements = caseDeclarations.flatMap(\.elements)
 
         return caseElements.map { caseElement in
