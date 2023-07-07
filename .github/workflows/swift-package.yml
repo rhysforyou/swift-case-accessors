@@ -1,0 +1,16 @@
+name: Build & Test Swift Package
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v2
+      - uses: fwal/setup-swift@v1
+        with:
+          swift-version: "5.9.0"
+      - name: Build
+        run: swift build
+      - name: Run tests
+        run: swift test
