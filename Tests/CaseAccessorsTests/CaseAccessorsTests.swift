@@ -26,13 +26,13 @@ final class CaseAccessorsTests: XCTestCase {
                 case one(String)
                 case two(Int)
                 var one: String? {
-                    guard case .one(let value) = self else {
+                    guard case let .one(value) = self else {
                         return nil
                     }
                     return value
                 }
                 var two: Int? {
-                    guard case .two(let value) = self else {
+                    guard case let .two(value) = self else {
                         return nil
                     }
                     return value
@@ -58,13 +58,13 @@ final class CaseAccessorsTests: XCTestCase {
             enum Test {
                 case one(String), two(Int)
                 var one: String? {
-                    guard case .one(let value) = self else {
+                    guard case let .one(value) = self else {
                         return nil
                     }
                     return value
                 }
                 var two: Int? {
-                    guard case .two(let value) = self else {
+                    guard case let .two(value) = self else {
                         return nil
                     }
                     return value
@@ -90,10 +90,10 @@ final class CaseAccessorsTests: XCTestCase {
             enum Test {
                 case one(String, Int)
                 var one: (String, Int)? {
-                    guard case .one(let value) = self else {
+                    guard case let .one(a, b) = self else {
                         return nil
                     }
-                    return value
+                    return (a, b)
                 }
             }
             """,
@@ -116,7 +116,7 @@ final class CaseAccessorsTests: XCTestCase {
             enum Test {
                 case one(String?)
                 var one: String? {
-                    guard case .one(let value) = self else {
+                    guard case let .one(value) = self else {
                         return nil
                     }
                     return value

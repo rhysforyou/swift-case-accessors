@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Enum cases with multiple associated values no longer produce a build warning
+
 ## [0.0.1] - 2014-05-31
 
 ### Added

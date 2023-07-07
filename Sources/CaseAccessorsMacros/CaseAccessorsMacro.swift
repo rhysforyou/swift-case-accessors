@@ -36,11 +36,17 @@ public struct CaseAccessorsMacro: MemberMacro {
             let associatedValues = caseElement.associatedValue!.parameterList
 
             let returnTypeSyntax: TypeSyntax
+            let valueBindings: String
+            let returnValue: String
 
             if associatedValues.count == 1, associatedValues.first!.type.is(OptionalTypeSyntax.self) {
                 returnTypeSyntax = associatedValues.first!.type
+                valueBindings = "value"
+                returnValue = "value"
             } else if associatedValues.count == 1 {
                 returnTypeSyntax = TypeSyntax(OptionalTypeSyntax(wrappedType: associatedValues.first!.type))
+                valueBindings = "value"
+                returnValue = "value"
             } else {
                 let tupleType = TupleTypeSyntax(
                     elements: TupleTypeElementListSyntax {
@@ -51,14 +57,18 @@ public struct CaseAccessorsMacro: MemberMacro {
                 )
 
                 returnTypeSyntax = TypeSyntax(OptionalTypeSyntax(wrappedType: tupleType))
+                valueBindings = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "x", "y", "z"]
+                    .prefix(associatedValues.count)
+                    .joined(separator: ", ")
+                returnValue = "(\(valueBindings))"
             }
 
             return """
             var \(caseElement.identifier): \(returnTypeSyntax) {
-                guard case .\(caseElement.identifier)(let value) = self else {
+                guard case let .\(caseElement.identifier)(\(raw: valueBindings)) = self else {
                     return nil
                 }
-                return value
+                return \(raw: returnValue)
             }
             """
         }
