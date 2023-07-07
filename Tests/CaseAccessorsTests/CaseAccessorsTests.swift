@@ -1,14 +1,19 @@
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
+
+// Macro implementations build for the host, so the corresponding module is not available when cross-compiling. Cross-compiled tests may still make use of the macro itself in end-to-end tests.
+#if canImport(CaseAccessorsMacros)
 import CaseAccessorsMacros
 
 let testMacros: [String: Macro.Type] = [
     "CaseAccessors": CaseAccessorsMacro.self
 ]
+#endif
 
 final class CaseAccessorsTests: XCTestCase {
-    func testAccessors() {
+    func testAccessors() throws {
+#if canImport(CaseAccessorsMacros)
         assertMacroExpansion(
             """
             @CaseAccessors enum Test {
@@ -36,9 +41,13 @@ final class CaseAccessorsTests: XCTestCase {
             """,
             macros: testMacros
         )
+#else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+#endif
     }
 
-    func testAccessorsCompact() {
+    func testAccessorsCompact() throws {
+#if canImport(CaseAccessorsMacros)
         assertMacroExpansion(
             """
             @CaseAccessors enum Test {
@@ -64,9 +73,13 @@ final class CaseAccessorsTests: XCTestCase {
             """,
             macros: testMacros
         )
+#else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+#endif
     }
 
-    func testAccessorsMultipleAssociatedValues() {
+    func testAccessorsMultipleAssociatedValues() throws {
+#if canImport(CaseAccessorsMacros)
         assertMacroExpansion(
             """
             @CaseAccessors enum Test {
@@ -86,9 +99,13 @@ final class CaseAccessorsTests: XCTestCase {
             """,
             macros: testMacros
         )
+#else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+#endif
     }
 
-    func testAccessorsOptional() {
+    func testAccessorsOptional() throws {
+#if canImport(CaseAccessorsMacros)
         assertMacroExpansion(
             """
             @CaseAccessors enum Test {
@@ -108,9 +125,13 @@ final class CaseAccessorsTests: XCTestCase {
             """,
             macros: testMacros
         )
+#else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+#endif
     }
 
-    func testAccessorsNonEnum() {
+    func testAccessorsNonEnum() throws {
+#if canImport(CaseAccessorsMacros)
         assertMacroExpansion(
             """
             @CaseAccessors struct Test {
@@ -132,9 +153,13 @@ final class CaseAccessorsTests: XCTestCase {
             ],
             macros: testMacros
         )
+#else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+#endif
     }
 
-    func testAccessorsNoAssociatedValues() {
+    func testAccessorsNoAssociatedValues() throws {
+#if canImport(CaseAccessorsMacros)
         assertMacroExpansion(
             """
             @CaseAccessors enum Test {
@@ -156,5 +181,8 @@ final class CaseAccessorsTests: XCTestCase {
             ],
             macros: testMacros
         )
+#else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+#endif
     }
 }
