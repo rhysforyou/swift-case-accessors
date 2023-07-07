@@ -1,6 +1,41 @@
-# Case Accessors Macro Demo
+# Case Accessors
 
-This is a demo of the new macro capabilities in Swift 5.9. It defines two new macros.
+This package offers two macros that make destructuring enums with associated values more straightforward. 
+
+The first, `@CaseAccessors`, adds computed properties to an enum type that allow easy retrieval of associated values.
+
+```swift
+@CaseAccessors enum TestEnum {
+    case stringValue(String)
+    case intValue(Int)
+    case boolValue(Bool)
+}
+
+let enumValue = TestEnum.string("Hello, Macros!")
+
+if let stringValue = enumValue.stringValue {
+    print(stringValue) // Prints "Hello, Macros!"
+}
+```
+
+The second, `@CaseConditionals` adds boolean computed properties that make it easier to perform conditional checks on enums.
+
+```swift
+@CaseConditionals enum TestEnum {
+    case one, two, three
+}
+
+let enumValue = TestEnum.one
+
+if enumValue.isOne {
+    // Do something
+}
+
+// The above is equivalent to
+if case .one = enumValue {
+    // Do something
+}
+```
 
 ## `@CaseAccessors`
 
