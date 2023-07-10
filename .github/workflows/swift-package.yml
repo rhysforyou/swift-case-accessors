@@ -13,4 +13,4 @@ jobs:
       - name: Build
         run: swift build | xcpretty
       - name: Run tests
-        run: swift test | xpretty
+        run: swift test | xcpretty
