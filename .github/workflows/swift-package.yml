@@ -11,6 +11,6 @@ jobs:
         with:
           xcode-version: '15.0-beta'
       - name: Build
-        run: swift build
+        run: swift build | xcpretty
       - name: Run tests
-        run: swift test
+        run: swift test | xpretty
