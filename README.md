@@ -1,9 +1,9 @@
 # Case Accessors
 
 [![Build & Test Swift Package](https://github.com/rhysforyou/swift-case-accessors/actions/workflows/swift-package.yml/badge.svg)](https://github.com/rhysforyou/swift-case-accessors/actions/workflows/swift-package.yml)
-![Supports Swift 5.9+](https://img.shields.io/badge/swift-5.9%2B-blue?style=flat-square)
-![Supports macOS, iOS, tvOS, watchOS, and Linux](https://img.shields.io/badge/platform-macOS%20|%20iOS%20|%20iPadOS%20|%20tvOS%20|%20watchOS%20|%20visionOS%20|%20Linux-blue?style=flat-square)
-[![Licensed under the MIT License](https://img.shields.io/github/license/rhysforyou/swift-case-accessors?color=blue&style=flat-square)](LICENSE)
+![Supports Swift 5.9+](https://img.shields.io/badge/swift-5.9%2B-blue)
+![Supports macOS, iOS, tvOS, watchOS, and Linux](https://img.shields.io/badge/platform-macOS%20|%20iOS%20|%20iPadOS%20|%20tvOS%20|%20watchOS%20|%20visionOS%20|%20Linux-blue)
+[![Licensed under the MIT License](https://img.shields.io/github/license/rhysforyou/swift-case-accessors?color=blue)](LICENSE)
 
 [Swift Package Index listing](https://swiftpackageindex.com/rhysforyou/swift-case-accessors) • [Documentation](https://swiftpackageindex.com/rhysforyou/swift-case-accessors/main/documentation/caseaccessors) • [Compatibility](https://swiftpackageindex.com/rhysforyou/swift-case-accessors/builds)
 
